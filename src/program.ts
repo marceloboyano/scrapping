@@ -1,12 +1,18 @@
+import { Airtable } from "./airtable_api";
 import { NewsProcessor } from "./news_processor";
-import { TryCatchDecorator } from "./utils/decorators";
+import { TryCatch } from "./utils/decorators";
 
 export class Program {
     constructor(private baseUri: string) {}
 
-    @TryCatchDecorator
+    @TryCatch
     async main() {
         let newsProcessor = new NewsProcessor(this.baseUri);
-        await newsProcessor.procesarUrl(this.baseUri);
+        let noticias = await newsProcessor.procesarUrl();
+
+        let airtable = new Airtable();
+        let response = await airtable.sendNews(noticias);
+
+        console.log(response);
     }
 }

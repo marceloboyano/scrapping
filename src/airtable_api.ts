@@ -1,35 +1,43 @@
-import dotenv from 'dotenv';
-import axios from 'axios';
+import dotenv from "dotenv";
+import axios from "axios";
+import { TryCatch } from "./utils/decorators";
 
 dotenv.config();
 
-async function main() {
-    try {
-        let body = {
-            records: [
-                {
-                    fields: {
-                      Contenido: "test content api from script",
-                      Link: "testlink.com",
-                      Titulo: "test api from script"
-                    }
-                }
-            ]
+export class Airtable {
+    private newsUri = "https://api.airtable.com/v0/app9dJOHfY6Sf36YV/news";
+    private headers = {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
+        },
+    };
+
+    constructor() {}
+
+    @TryCatch
+    async sendNews(news: string): Promise<any> {
+        let body = this.createNewsBody(JSON.parse(news));
+
+        let response = await axios.post(this.newsUri, body, this.headers);
+        
+        // console.log('body before: ', JSON.stringify(body));
+        
+        return null;
+    }
+
+    private createNewsBody(news: any) {
+        return {
+            records: news.map(this.noticiaBuild),
         };
-
-        let headers = {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`
-            }
+    }
+    noticiaBuild(noticiaJson: any) {
+        return {
+            fields: {
+                Titulo: noticiaJson.Titulo,
+                Contenido: noticiaJson.Descripcion,
+                Link: noticiaJson.Enlaces,
+            },
         };
-
-        let response = await axios.post('https://api.airtable.com/v0/app9dJOHfY6Sf36YV/news', body, headers);
-
-        console.log(response);
-    } catch (error) {
-        console.error('Error al realizar la solicitud:', console.log(JSON.stringify(error)));
     }
 }
-
-main();
