@@ -19,6 +19,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Program = void 0;
+const airtable_api_1 = require("./airtable_api");
 const news_processor_1 = require("./news_processor");
 const decorators_1 = require("./utils/decorators");
 class Program {
@@ -28,13 +29,16 @@ class Program {
     main() {
         return __awaiter(this, void 0, void 0, function* () {
             let newsProcessor = new news_processor_1.NewsProcessor(this.baseUri);
-            yield newsProcessor.procesarUrl(this.baseUri);
+            let noticias = yield newsProcessor.procesarUrl();
+            let airtable = new airtable_api_1.Airtable();
+            let response = yield airtable.sendNews(noticias);
+            console.log(response);
         });
     }
 }
 exports.Program = Program;
 __decorate([
-    decorators_1.TryCatchDecorator,
+    decorators_1.TryCatch,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

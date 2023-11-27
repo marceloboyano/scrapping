@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TryCatchDecorator = void 0;
-function TryCatchDecorator(target, propertyKey, descriptor) {
+exports.TryCatch = void 0;
+function TryCatch(target, propertyKey, descriptor) {
     const originalMethod = descriptor.value;
     descriptor.value = function (...args) {
         try {
@@ -13,4 +13,4 @@ function TryCatchDecorator(target, propertyKey, descriptor) {
     };
     return descriptor;
 }
-exports.TryCatchDecorator = TryCatchDecorator;
+exports.TryCatch = TryCatch;
